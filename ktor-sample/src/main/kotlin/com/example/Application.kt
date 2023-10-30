@@ -14,5 +14,8 @@ fun Application.module() {
     configureHTTP()
     configureSecurity()
     configureSerialization()
-    configureRouting()
+    configureRouting()      // this was by default configure routing is necessary
+
 }
+
+

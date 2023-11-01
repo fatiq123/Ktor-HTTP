@@ -1,6 +1,7 @@
 package com.example.models
 
 import org.jetbrains.exposed.sql.*
+import java.io.Serializable
 
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -20,7 +21,7 @@ import java.util.concurrent.atomic.AtomicInteger
 //    "...it's what keeps me going."
 //))
 
-data class Article(val id: Int, val title: String, val body: String)
+data class Article(val id: Int, val title: String, val body: String): Serializable
 
 object Articles : Table() {
     val id = integer("id").autoIncrement()

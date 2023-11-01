@@ -4,12 +4,10 @@ import com.example.dao.DatabaseFactory
 import com.example.plugins.*
 import io.ktor.server.application.*
 
-fun main(args: Array<String>) {
-    io.ktor.server.netty.EngineMain.main(args)
-}
+fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 fun Application.module() {
-    DatabaseFactory.init()      // database should load at application start
-    configureTemplating()
+    DatabaseFactory.init(environment.config)
     configureRouting()
+    configureTemplating()
 }

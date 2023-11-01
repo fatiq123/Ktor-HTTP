@@ -49,6 +49,7 @@ class DAOFacadeImpl : DAOFacade {
 }
 
 
+/*
 //Let's create an instance of DAOFacade and add a sample article into be inserted to the database before the application is started
 val dao: DAOFacade = DAOFacadeImpl().apply {
     runBlocking {
@@ -56,4 +57,4 @@ val dao: DAOFacade = DAOFacadeImpl().apply {
             addNewArticle("The drive to develop!", "...it's what keeps me going.")
         }
     }
-}
+}*/

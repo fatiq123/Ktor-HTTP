@@ -1,7 +1,6 @@
 package com.example.plugins
 
-import com.example.models.Article
-import com.example.models.articles
+import com.example.dao.dao
 import io.ktor.server.application.*
 import io.ktor.server.freemarker.*
 import io.ktor.server.http.content.*
@@ -23,7 +22,8 @@ fun Application.configureRouting() {
         route("articles") {
 
             get {
-                call.respond(FreeMarkerContent("index.ftl", mapOf("articles" to articles)))
+//                call.respond(FreeMarkerContent("index.ftl", mapOf("articles" to articles)))
+                call.respond(FreeMarkerContent("index.ftl", mapOf("articles" to dao.allArticles())))
             }
             get("new") {
                 call.respond(FreeMarkerContent("new.ftl", model = null))
@@ -40,26 +40,31 @@ fun Application.configureRouting() {
                 val formParameters = call.receiveParameters()
                 val title = formParameters.getOrFail("title")
                 val body = formParameters.getOrFail("body")
-                val newEntry = Article.newEntry(title = title, body = body)
-                articles.add(newEntry)
-                call.respondRedirect("/articles/${newEntry.id}")
+//                val newEntry = Article.newEntry(title = title, body = body)
+//                articles.add(newEntry)
+                val article = dao.addNewArticle(title = title, body = body)
+//                call.respondRedirect("/articles/${newEntry.id}")
+                call.respondRedirect("/articles/${article?.id}")
+
             }
             get("{id}") {
                 // Show an article with a specific id
                 val id = call.parameters.getOrFail<Int>("id").toInt()
-                call.respond(FreeMarkerContent("show.ftl", mapOf("article" to articles.find { it.id == id })))
+//                call.respond(FreeMarkerContent("show.ftl", mapOf("article" to articles.find { it.id == id })))
+                call.respond(FreeMarkerContent("show.ftl", mapOf("article" to dao.article(id = id))))
             }
             get("{id}/edit") {
                 // Show a page with fields for editing an article
                 val id = call.parameters.getOrFail<Int>("id").toInt()
-                call.respond(FreeMarkerContent("edit.ftl", mapOf("article" to articles.find { it.id == id })))
+//                call.respond(FreeMarkerContent("edit.ftl", mapOf("article" to articles.find { it.id == id })))
+                call.respond(FreeMarkerContent("edit.ftl", mapOf("article" to dao.article(id = id))))
             }
             post("{id}") {
                 // Update or delete an article
                 val id = call.parameters.getOrFail<Int>("id").toInt()
                 val formParameters = call.receiveParameters()
                 when (formParameters.getOrFail("_action")) {
-                    "update" -> {
+                    /*"update" -> {
                         val index = articles.indexOf(articles.find { it.id == id })
                         val title = formParameters.getOrFail("title")
                         val body = formParameters.getOrFail("body")
@@ -69,6 +74,16 @@ fun Application.configureRouting() {
                     }
                     "delete" -> {
                         articles.removeIf { it.id == id }
+                        call.respondRedirect("/articles")
+                    }*/
+                    "update" -> {
+                        val title = formParameters.getOrFail("title")
+                        val body = formParameters.getOrFail("body")
+                        dao.editArticle(id, title, body)
+                        call.respondRedirect("/articles/$id")
+                    }
+                    "delete" -> {
+                        dao.deleteArticle(id)
                         call.respondRedirect("/articles")
                     }
                 }

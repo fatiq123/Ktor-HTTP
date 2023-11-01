@@ -1,5 +1,6 @@
 package com.example
 
+import com.example.dao.DatabaseFactory
 import com.example.plugins.*
 import io.ktor.server.application.*
 
@@ -8,6 +9,7 @@ fun main(args: Array<String>) {
 }
 
 fun Application.module() {
+    DatabaseFactory.init()      // database should load at application start
     configureTemplating()
     configureRouting()
 }
